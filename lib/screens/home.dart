@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:water_intake/models/water_model.dart';
+import 'package:water_intake/providers/water_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,26 +14,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final amountController = TextEditingController(text: "Hello");
-
-  void saveWater(String amount) async {
-    final url = Uri.https('water-intaker-app-default-rtdb.europe-west1.firebasedatabase.app', 'water.json');
-      var res = await http.post(url, headers:{
-        'Content-Type':'application/json'
-      }, body: json.encode({
-        'amount':double.parse(amount),
-        'unit':'ml',
-        'dateTime':DateTime.now().toString()
-        }
-      ));
-
-    if (res.statusCode == 200){
-      print('Data saved');
+  final amountController = TextEditingController();
+  void saveWater() async {
+    Provider.of<WaterProvider>(context, listen: false).addWater(
+      WaterModel(
+        amount: double.parse(amountController.text),
+        dateTime: DateTime.now(),
+        unit: 'ml',
+      ),
+    );
+    if(!context.mounted){
+      return;
     }
-    else{
-      print("Not saved");
-    }
-
   }
 
   void addWater() {
@@ -55,10 +50,19 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
-          TextButton(onPressed: (){Navigator.pop(context);}, child: Text('Cancel')),
-          TextButton(onPressed: () {
-            saveWater(amountController.text);
-          }, child: Text('Save')),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              saveWater();
+              Navigator.of(context).pop();
+            },
+            child: Text('Save'),
+          ),
         ],
       ),
     );
@@ -66,18 +70,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 4,
-        centerTitle: true,
-        title: Text("Water Intake"),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.map))],
-      ),
-      backgroundColor: Theme.of(context).colorScheme.background,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: addWater,
-      ),
+    return Consumer<WaterProvider>(
+      builder: (BuildContext context, WaterProvider value, Widget? child) =>
+          Scaffold(
+            appBar: AppBar(
+              elevation: 4,
+              centerTitle: true,
+              title: Text("Water Intake"),
+              actions: [IconButton(onPressed: () {}, icon: Icon(Icons.map))],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.background,
+            floatingActionButton: FloatingActionButton(
+              onPressed: addWater,
+              child: Icon(Icons.add),
+            ),
+          ),
     );
   }
 }
