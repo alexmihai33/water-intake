@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:water_intake/models/water_model.dart';
 import 'package:water_intake/providers/water_provider.dart';
+import 'package:water_intake/widgets/water_intake_summary.dart';
 import 'package:water_intake/widgets/water_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,10 +15,26 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final amountController = TextEditingController();
 
+  bool _isLoading = true;
+
   @override
   void initState() {
-    Provider.of<WaterProvider>(context, listen: false).getWater();
+    _loadData();
     super.initState();
+  }
+
+  void _loadData() async {
+    await Provider.of<WaterProvider>(context, listen: false).getWater().then(
+      (value) => {
+        value.isNotEmpty
+            ? setState(() {
+                _isLoading = false;
+              })
+            : setState(() {
+                _isLoading = true;
+              }),
+      },
+    );
   }
 
   void saveWater() async {
@@ -58,7 +75,7 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              amountController.text="";
+              amountController.text = "";
             },
             child: Text('Cancel'),
           ),
@@ -66,7 +83,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               saveWater();
               Navigator.of(context).pop();
-              amountController.text="";
+              amountController.text = "";
             },
             child: Text('Save'),
           ),
@@ -86,20 +103,31 @@ class _HomePageState extends State<HomePage> {
               title: Text("Water Intake"),
               actions: [IconButton(onPressed: () {}, icon: Icon(Icons.map))],
             ),
-            body: ListView.builder(
-              itemCount: value.waterDataList.length,
-              itemBuilder: (context, index) {
-                final waterModel = value.waterDataList[index];
-                return WaterTile(waterModel: waterModel);
-              },
-            ),
             backgroundColor: Theme.of(context).colorScheme.background,
             floatingActionButton: FloatingActionButton(
               onPressed: addWater,
               child: Icon(Icons.add),
             ),
+            body: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: WaterSummary(startOfWeek: value.getStartOfWeek()),
+                ),
+                !_isLoading
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: value.waterDataList.length,
+                        itemBuilder: (context, index) {
+                          final waterModel = value.waterDataList[index];
+                          return WaterTile(waterModel: waterModel);
+                        },
+                      )
+                    : const Center(child: CircularProgressIndicator()),
+              ],
+            ),
           ),
     );
   }
 }
-
