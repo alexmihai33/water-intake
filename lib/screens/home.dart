@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context, WaterProvider value, Widget? child) =>
           Scaffold(
             appBar: AppBar(
-              elevation: 4,
               centerTitle: true,
               title: Text("Water Intake"),
               actions: [IconButton(onPressed: () {}, icon: Icon(Icons.map))],
@@ -110,10 +109,7 @@ class _HomePageState extends State<HomePage> {
             ),
             body: ListView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: WaterSummary(startOfWeek: value.getStartOfWeek()),
-                ),
+                WaterSummary(startOfWeek: value.getStartOfWeek()),
                 !_isLoading
                     ? ListView.builder(
                         shrinkWrap: true,
