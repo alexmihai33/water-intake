@@ -99,8 +99,12 @@ class _HomePageState extends State<HomePage> {
           Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text("This week: ${value.calculateWeeklyWaterIntake(value)} ml",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+              title: Text(
+                "This week: ${value.calculateWeeklyWaterIntake(value)} ml",
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
               actions: [IconButton(onPressed: () {}, icon: Icon(Icons.map))],
             ),
             backgroundColor: Theme.of(context).colorScheme.background,
@@ -123,6 +127,30 @@ class _HomePageState extends State<HomePage> {
                       )
                     : const Center(child: CircularProgressIndicator()),
               ],
+            ),
+            drawer: Drawer(
+              child: ListView(
+                children: [
+                  DrawerHeader(
+                    decoration: BoxDecoration(color: Colors.blue[300]),
+                    child: Text(
+                      "Water Intake",
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    onTap: (){},
+                    title: Text('Settings', style:Theme.of(context).textTheme.titleLarge),
+                  ),
+                  ListTile(
+                    onTap:(){},
+                    title: Text('About', style:Theme.of(context).textTheme.titleLarge),
+                  ),
+                ],
+              ),
             ),
           ),
     );
