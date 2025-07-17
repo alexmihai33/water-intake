@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:water_intake/models/water_model.dart';
 import 'package:water_intake/providers/water_provider.dart';
+import 'package:water_intake/widgets/water_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
     Provider.of<WaterProvider>(context, listen: false).getWater();
     super.initState();
   }
+
   void saveWater() async {
     Provider.of<WaterProvider>(context, listen: false).addWaterToDatabase(
       WaterModel(
@@ -26,7 +28,7 @@ class _HomePageState extends State<HomePage> {
         unit: 'ml',
       ),
     );
-    if(!context.mounted){
+    if (!context.mounted) {
       return;
     }
   }
@@ -56,6 +58,7 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
+              amountController.text="";
             },
             child: Text('Cancel'),
           ),
@@ -63,6 +66,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               saveWater();
               Navigator.of(context).pop();
+              amountController.text="";
             },
             child: Text('Save'),
           ),
@@ -84,10 +88,11 @@ class _HomePageState extends State<HomePage> {
             ),
             body: ListView.builder(
               itemCount: value.waterDataList.length,
-              itemBuilder: (context, index){
+              itemBuilder: (context, index) {
                 final waterModel = value.waterDataList[index];
-                return ListTile(title:Text(waterModel.amount.toString()));
-            }),
+                return WaterTile(waterModel: waterModel);
+              },
+            ),
             backgroundColor: Theme.of(context).colorScheme.background,
             floatingActionButton: FloatingActionButton(
               onPressed: addWater,
@@ -97,3 +102,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
