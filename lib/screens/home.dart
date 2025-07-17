@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:water_intake/models/water_model.dart';
 import 'package:water_intake/providers/water_provider.dart';
+import 'package:water_intake/screens/about.dart';
+import 'package:water_intake/screens/settings.dart';
 import 'package:water_intake/widgets/water_intake_summary.dart';
 import 'package:water_intake/widgets/water_tile.dart';
 
@@ -142,11 +144,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   ListTile(
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SettingsScreen()));
+                    },
                     title: Text('Settings', style:Theme.of(context).textTheme.titleLarge),
                   ),
                   ListTile(
-                    onTap:(){},
+                    onTap:(){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutScreen()));
+                    },
                     title: Text('About', style:Theme.of(context).textTheme.titleLarge),
                   ),
                 ],
