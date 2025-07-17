@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:water_intake/models/water_model.dart';
 import 'package:water_intake/providers/water_provider.dart';
@@ -15,8 +12,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final amountController = TextEditingController();
+
+  @override
+  void initState() {
+    Provider.of<WaterProvider>(context, listen: false).getWater();
+    super.initState();
+  }
   void saveWater() async {
-    Provider.of<WaterProvider>(context, listen: false).addWater(
+    Provider.of<WaterProvider>(context, listen: false).addWaterToDatabase(
       WaterModel(
         amount: double.parse(amountController.text),
         dateTime: DateTime.now(),
@@ -79,6 +82,12 @@ class _HomePageState extends State<HomePage> {
               title: Text("Water Intake"),
               actions: [IconButton(onPressed: () {}, icon: Icon(Icons.map))],
             ),
+            body: ListView.builder(
+              itemCount: value.waterDataList.length,
+              itemBuilder: (context, index){
+                final waterModel = value.waterDataList[index];
+                return ListTile(title:Text(waterModel.amount.toString()));
+            }),
             backgroundColor: Theme.of(context).colorScheme.background,
             floatingActionButton: FloatingActionButton(
               onPressed: addWater,
