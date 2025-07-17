@@ -12,6 +12,7 @@ class WaterTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
+      color: Colors.blue[50],
           child: ListTile(
             title: Row(
               children: [
