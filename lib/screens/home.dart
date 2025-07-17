@@ -99,7 +99,8 @@ class _HomePageState extends State<HomePage> {
           Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text("Water Intake"),
+              title: Text("This week: ${value.calculateWeeklyWaterIntake(value)} ml",
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
               actions: [IconButton(onPressed: () {}, icon: Icon(Icons.map))],
             ),
             backgroundColor: Theme.of(context).colorScheme.background,
